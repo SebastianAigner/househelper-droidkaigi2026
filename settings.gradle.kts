@@ -1,5 +1,4 @@
-rootProject.name = "HouseHelper"
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+@file:Suppress("UnstableApiUsage")
 
 pluginManagement {
     repositories {
@@ -15,6 +14,15 @@ pluginManagement {
     }
 }
 
+plugins {
+    // Lets Gradle auto-provision a matching JDK for the toolchain configured in composeApp,
+    // so contributors don't need to have it installed themselves.
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+rootProject.name = "HouseHelper"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 dependencyResolutionManagement {
     repositories {
         google {
@@ -25,7 +33,9 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
 include(":composeApp")
+include(":androidApp")
