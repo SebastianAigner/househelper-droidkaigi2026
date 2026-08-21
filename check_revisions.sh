@@ -5,15 +5,15 @@
 
 set -e  # Exit immediately if a command exits with a non-zero status
 
-# Find the latest commit in the current branch with message containing "Run starter project"
-STARTER_COMMIT=$(git log --grep="Run starter project" --format="%H" -n 1)
+# Find the latest commit in the current branch with message containing "Prepare starter project"
+STARTER_COMMIT=$(git log --grep="Prepare starter project" --format="%H" -n 1)
 if [ -z "$STARTER_COMMIT" ]; then
-    echo "Error: Could not find commit with message 'Run starter project' in the current branch"
+    echo "Error: Could not find commit with message 'Prepare starter project' in the current branch"
     exit 1
 fi
 
-# Get all commits from the starter commit to solutions
-COMMITS=$(git log --reverse --format="%H" $STARTER_COMMIT..solutions)
+# Get all commits from the starter commit to droidkaigi-final
+COMMITS=$(git log --reverse --format="%H" $STARTER_COMMIT..droidkaigi-final)
 COMMITS="$STARTER_COMMIT $COMMITS"  # Include the starter commit
 
 # Function to run the application and stop it after 10 seconds
@@ -112,6 +112,6 @@ done
 
 echo "All revisions checked successfully!"
 
-# Check out the solutions branch (quiet mode)
-git checkout -q solutions
-echo "solutions branch is now checked out."
+# Check out the droidkaigi-final branch (quiet mode)
+git checkout -q droidkaigi-final
+echo "droidkaigi-final branch is now checked out."
