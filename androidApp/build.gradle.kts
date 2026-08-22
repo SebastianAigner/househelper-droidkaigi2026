@@ -45,5 +45,5 @@ dependencies {
     implementation(compose.material3)
     implementation(libs.androidx.activity.compose)
 
-    implementation(libs.koin.compose.viewmodel.navigation)
+    implementation(libs.koin.compose.viewmodel)
 }

@@ -90,11 +90,12 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.navigation3.ui)
+            implementation(libs.androidx.lifecycle.viewmodel.navigation3)
             implementation(libs.kotlinx.serialization)
             implementation(libs.kotlinx.serialization.json)
 
-            implementation(libs.koin.compose.viewmodel.navigation)
+            implementation(libs.koin.compose.viewmodel)
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)

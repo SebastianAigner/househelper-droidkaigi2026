@@ -1,30 +1,30 @@
 package com.kotlinconf.workshop.househelper.navigation
 
-
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+
+@Serializable
+sealed interface Screen : NavKey
 
 // Start screens
 @Serializable
-data object Onboarding
+data object OnboardingWelcome : Screen
 
 @Serializable
-data object OnboardingWelcome
+data object OnboardingAbout : Screen
 
 @Serializable
-data object OnboardingAbout
-
-@Serializable
-data object OnboardingDone
+data object OnboardingDone : Screen
 
 // Main screens
 @Serializable
-data object Dashboard
+data object Dashboard : Screen
 
 @Serializable
-data class LightDetails(val deviceId: String)
+data class LightDetails(val deviceId: String) : Screen
 
 @Serializable
-data class CameraDetails(val deviceId: String)
+data class CameraDetails(val deviceId: String) : Screen
 
 @Serializable
-data class RenameDevice(val deviceId: String)
+data class RenameDevice(val deviceId: String) : Screen
