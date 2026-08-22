@@ -92,11 +92,16 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlinx.serialization)
+            implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.koin.compose.viewmodel.navigation)
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
 
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)

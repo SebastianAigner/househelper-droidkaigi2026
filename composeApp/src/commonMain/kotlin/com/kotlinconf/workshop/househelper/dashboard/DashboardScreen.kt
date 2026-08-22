@@ -22,8 +22,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kotlinconf.workshop.househelper.chat.ChatScreen
 
 import househelper.composeapp.generated.resources.Res
+import househelper.composeapp.generated.resources.dashboard_tab_assistant
 import househelper.composeapp.generated.resources.dashboard_tab_rooms
 import househelper.composeapp.generated.resources.dashboard_tab_settings
 import org.jetbrains.compose.resources.stringResource
@@ -56,6 +58,11 @@ fun DashboardScreen(
                 onClick = { selectedTabIndex = 1 },
                 text = { Text(stringResource(Res.string.dashboard_tab_settings)) }
             )
+            Tab(
+                selected = selectedTabIndex == 2,
+                onClick = { selectedTabIndex = 2 },
+                text = { Text(stringResource(Res.string.dashboard_tab_assistant)) }
+            )
         }
 
         AnimatedContent(
@@ -77,6 +84,7 @@ fun DashboardScreen(
                 }
 
                 1 -> SettingsContent()
+                2 -> ChatScreen()
             }
         }
     }
