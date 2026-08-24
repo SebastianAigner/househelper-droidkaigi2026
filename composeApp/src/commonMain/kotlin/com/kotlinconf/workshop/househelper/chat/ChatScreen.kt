@@ -18,13 +18,16 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.math.roundToInt
 
 private const val DEVICES_POLL_INTERVAL_MS = 1000L
 
@@ -45,6 +49,7 @@ fun ChatScreen(
     val serverAddress by viewModel.serverAddress.collectAsStateWithLifecycle()
     val devices by viewModel.devices.collectAsStateWithLifecycle()
     val devicesError by viewModel.devicesError.collectAsStateWithLifecycle()
+    val isSavingPower by viewModel.isSavingPower.collectAsStateWithLifecycle()
     var input by rememberSaveable { mutableStateOf("") }
     val listState = rememberLazyListState()
 
@@ -76,6 +81,16 @@ fun ChatScreen(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
             )
         }
+
+        val isResettingHouse by viewModel.isResettingHouse.collectAsStateWithLifecycle()
+        val currentWatts = remember(devices) { devices.sumOf { it.watts }.roundToInt() }
+        PowerSaveCard(
+            currentWatts = currentWatts,
+            isSaving = isSavingPower,
+            isResetting = isResettingHouse,
+            onSavePower = viewModel::savePower,
+            onResetHouse = viewModel::resetHouse,
+        )
 
         HorizontalDivider()
 
@@ -156,7 +171,88 @@ private fun AddressBar(
 }
 
 @Composable
+private fun PowerSaveCard(
+    currentWatts: Int,
+    isSaving: Boolean,
+    isResetting: Boolean,
+    onSavePower: (targetWatts: Int, userAtHome: Boolean) -> Unit,
+    onResetHouse: () -> Unit,
+) {
+    var targetWattsInput by rememberSaveable { mutableStateOf("500") }
+    var userAtHome by rememberSaveable { mutableStateOf(true) }
+    val targetWatts = targetWattsInput.toIntOrNull()
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("Power save", style = MaterialTheme.typography.titleSmall)
+                Text(
+                    text = "Current draw: $currentWatts W",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedTextField(
+                    value = targetWattsInput,
+                    onValueChange = { targetWattsInput = it.filter(Char::isDigit) },
+                    modifier = Modifier.weight(1f),
+                    label = { Text("Target watts") },
+                    singleLine = true,
+                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("At home", style = MaterialTheme.typography.labelSmall)
+                    Switch(checked = userAtHome, onCheckedChange = { userAtHome = it })
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Button(
+                    onClick = { targetWatts?.let { onSavePower(it, userAtHome) } },
+                    enabled = !isSaving && targetWatts != null,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(if (isSaving) "Saving power…" else "Save power")
+                }
+                OutlinedButton(
+                    onClick = onResetHouse,
+                    enabled = !isResetting,
+                ) {
+                    Text("Reset house")
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun ChatBubble(message: ChatMessage) {
+    if (message.isSystem) {
+        SystemBubble(message.text)
+        return
+    }
+
     val alignment = if (message.isFromUser) Alignment.End else Alignment.Start
     val containerColor = if (message.isFromUser) {
         MaterialTheme.colorScheme.primaryContainer
@@ -178,6 +274,23 @@ private fun ChatBubble(message: ChatMessage) {
             Text(
                 text = message.text,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SystemBubble(text: String) {
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Surface(
+            shape = RoundedCornerShape(50),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
             )
         }
     }

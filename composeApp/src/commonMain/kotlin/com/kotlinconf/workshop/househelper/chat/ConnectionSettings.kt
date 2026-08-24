@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-// Shared across ChatService and DevicesService so both hit the same Koog agent backend.
+// Shared across ChatService, DevicesService, and PowerSaveService so all hit the same Koog agent backend.
 class ConnectionSettings(
     val isAndroid: Boolean = false,
 ) {

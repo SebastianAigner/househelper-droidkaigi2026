@@ -3,6 +3,7 @@ package com.kotlinconf.workshop.househelper.chat
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,4 +30,7 @@ class DevicesService(
 ) {
     suspend fun getDevices(): List<AssistantDevice> =
         httpClient.get("${connectionSettings.baseUrl()}/api/devices").body()
+
+    suspend fun resetDevices(): List<AssistantDevice> =
+        httpClient.post("${connectionSettings.baseUrl()}/api/devices/reset").body()
 }
