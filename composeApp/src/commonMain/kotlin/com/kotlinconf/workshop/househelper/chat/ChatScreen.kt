@@ -1,5 +1,11 @@
 package com.kotlinconf.workshop.househelper.chat
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -32,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
@@ -180,6 +189,7 @@ private fun PowerSaveCard(
 ) {
     var targetWattsInput by rememberSaveable { mutableStateOf("500") }
     var userAtHome by rememberSaveable { mutableStateOf(true) }
+    var expanded by rememberSaveable { mutableStateOf(false) }
     val targetWatts = targetWattsInput.toIntOrNull()
 
     Surface(
@@ -193,12 +203,27 @@ private fun PowerSaveCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            val rotation by animateFloatAsState(if (expanded) 0f else -90f)
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .toggleable(
+                        value = expanded,
+                        onValueChange = { expanded = it },
+                    ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text("Power save", style = MaterialTheme.typography.titleSmall)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .graphicsLayer { rotationZ = rotation },
+                    )
+                    Text("Power save", style = MaterialTheme.typography.titleSmall)
+                }
                 Text(
                     text = "Current draw: $currentWatts W",
                     style = MaterialTheme.typography.bodyMedium,
@@ -206,40 +231,48 @@ private fun PowerSaveCard(
                 )
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut(),
             ) {
-                OutlinedTextField(
-                    value = targetWattsInput,
-                    onValueChange = { targetWattsInput = it.filter(Char::isDigit) },
-                    modifier = Modifier.weight(1f),
-                    label = { Text("Target watts") },
-                    singleLine = true,
-                )
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("At home", style = MaterialTheme.typography.labelSmall)
-                    Switch(checked = userAtHome, onCheckedChange = { userAtHome = it })
-                }
-            }
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        OutlinedTextField(
+                            value = targetWattsInput,
+                            onValueChange = { targetWattsInput = it.filter(Char::isDigit) },
+                            modifier = Modifier.weight(1f),
+                            label = { Text("Target watts") },
+                            singleLine = true,
+                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("At home", style = MaterialTheme.typography.labelSmall)
+                            Switch(checked = userAtHome, onCheckedChange = { userAtHome = it })
+                        }
+                    }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Button(
-                    onClick = { targetWatts?.let { onSavePower(it, userAtHome) } },
-                    enabled = !isSaving && targetWatts != null,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(if (isSaving) "Saving power…" else "Save power")
-                }
-                OutlinedButton(
-                    onClick = onResetHouse,
-                    enabled = !isResetting,
-                ) {
-                    Text("Reset house")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Button(
+                            onClick = { targetWatts?.let { onSavePower(it, userAtHome) } },
+                            enabled = !isSaving && targetWatts != null,
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Text(if (isSaving) "Saving power…" else "Save power")
+                        }
+                        OutlinedButton(
+                            onClick = onResetHouse,
+                            enabled = !isResetting,
+                        ) {
+                            Text("Reset house")
+                        }
+                    }
                 }
             }
         }
