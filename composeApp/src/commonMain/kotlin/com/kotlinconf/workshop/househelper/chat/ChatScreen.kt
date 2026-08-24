@@ -34,7 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 
-private const val LIGHTS_POLL_INTERVAL_MS = 1000L
+private const val DEVICES_POLL_INTERVAL_MS = 1000L
 
 @Composable
 fun ChatScreen(
@@ -43,8 +43,8 @@ fun ChatScreen(
     val messages by viewModel.messages.collectAsStateWithLifecycle()
     val isSending by viewModel.isSending.collectAsStateWithLifecycle()
     val serverAddress by viewModel.serverAddress.collectAsStateWithLifecycle()
-    val lights by viewModel.lights.collectAsStateWithLifecycle()
-    val lightsError by viewModel.lightsError.collectAsStateWithLifecycle()
+    val devices by viewModel.devices.collectAsStateWithLifecycle()
+    val devicesError by viewModel.devicesError.collectAsStateWithLifecycle()
     var input by rememberSaveable { mutableStateOf("") }
     val listState = rememberLazyListState()
 
@@ -55,8 +55,8 @@ fun ChatScreen(
 
     LaunchedEffect(Unit) {
         while (true) {
-            viewModel.refreshLights()
-            delay(LIGHTS_POLL_INTERVAL_MS)
+            viewModel.refreshDevices()
+            delay(DEVICES_POLL_INTERVAL_MS)
         }
     }
 
@@ -67,8 +67,8 @@ fun ChatScreen(
             showAndroidEmulatorNote = viewModel.isAndroid,
         )
 
-        LightsRow(lights = lights)
-        lightsError?.let { error ->
+        DevicesRow(devices = devices)
+        devicesError?.let { error ->
             Text(
                 text = error,
                 style = MaterialTheme.typography.labelSmall,

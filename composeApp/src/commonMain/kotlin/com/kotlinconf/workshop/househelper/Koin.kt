@@ -3,7 +3,7 @@ package com.kotlinconf.workshop.househelper
 import com.kotlinconf.workshop.househelper.chat.ChatService
 import com.kotlinconf.workshop.househelper.chat.ChatViewModel
 import com.kotlinconf.workshop.househelper.chat.ConnectionSettings
-import com.kotlinconf.workshop.househelper.chat.LightsService
+import com.kotlinconf.workshop.househelper.chat.DevicesService
 import com.kotlinconf.workshop.househelper.dashboard.AreaViewModel
 import com.kotlinconf.workshop.househelper.dashboard.DashboardViewModel
 import com.kotlinconf.workshop.househelper.dashboard.FavoritesViewModel
@@ -56,7 +56,7 @@ fun createKoinConfig(
         }
         single { ConnectionSettings(isAndroid) }
         single { ChatService(get(), get()) }
-        single { LightsService(get(), get()) }
+        single { DevicesService(get(), get()) }
     }
 
     val viewModelModule = module {

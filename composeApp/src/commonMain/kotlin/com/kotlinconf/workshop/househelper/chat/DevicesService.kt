@@ -6,25 +6,27 @@ import io.ktor.client.request.get
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AssistantLightColor(
+data class AssistantDeviceColor(
     val red: Int,
     val green: Int,
     val blue: Int,
 )
 
 @Serializable
-data class AssistantLight(
+data class AssistantDevice(
     val id: String,
     val name: String,
-    val color: AssistantLightColor,
-    val brightness: Int,
+    val kind: String,
     val on: Boolean,
+    val watts: Double,
+    val brightness: Int? = null,
+    val color: AssistantDeviceColor? = null,
 )
 
-class LightsService(
+class DevicesService(
     private val httpClient: HttpClient,
     private val connectionSettings: ConnectionSettings,
 ) {
-    suspend fun getLights(): List<AssistantLight> =
-        httpClient.get("${connectionSettings.baseUrl()}/api/lights").body()
+    suspend fun getDevices(): List<AssistantDevice> =
+        httpClient.get("${connectionSettings.baseUrl()}/api/devices").body()
 }

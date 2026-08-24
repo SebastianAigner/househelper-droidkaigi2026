@@ -15,7 +15,7 @@ data class ChatMessage(
 
 class ChatViewModel(
     private val chatService: ChatService,
-    private val lightsService: LightsService,
+    private val devicesService: DevicesService,
     private val connectionSettings: ConnectionSettings,
 ) : ViewModel() {
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
@@ -27,11 +27,11 @@ class ChatViewModel(
     val serverAddress: StateFlow<String> = connectionSettings.serverAddress
     val isAndroid: Boolean = connectionSettings.isAndroid
 
-    private val _lights = MutableStateFlow<List<AssistantLight>>(emptyList())
-    val lights: StateFlow<List<AssistantLight>> = _lights.asStateFlow()
+    private val _devices = MutableStateFlow<List<AssistantDevice>>(emptyList())
+    val devices: StateFlow<List<AssistantDevice>> = _devices.asStateFlow()
 
-    private val _lightsError = MutableStateFlow<String?>(null)
-    val lightsError: StateFlow<String?> = _lightsError.asStateFlow()
+    private val _devicesError = MutableStateFlow<String?>(null)
+    val devicesError: StateFlow<String?> = _devicesError.asStateFlow()
 
     fun setServerAddress(address: String) {
         connectionSettings.setServerAddress(address)
@@ -39,12 +39,12 @@ class ChatViewModel(
 
     // Driven by a LaunchedEffect scoped to the Assistant tab's composition, so
     // polling stops as soon as the tab is left instead of running forever in the background.
-    suspend fun refreshLights() {
+    suspend fun refreshDevices() {
         try {
-            _lights.value = lightsService.getLights()
-            _lightsError.value = null
+            _devices.value = devicesService.getDevices()
+            _devicesError.value = null
         } catch (e: Exception) {
-            _lightsError.value = "Couldn't load lights: ${e.message}"
+            _devicesError.value = "Couldn't load devices: ${e.message}"
         }
     }
 
