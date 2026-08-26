@@ -39,10 +39,10 @@ android {
 dependencies {
     implementation(projects.composeApp)
 
-    implementation(compose.runtime)
-    implementation(compose.foundation)
-    implementation(compose.ui)
-    implementation(compose.material3)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.koin.compose.viewmodel)

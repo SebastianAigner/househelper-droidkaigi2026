@@ -61,6 +61,7 @@ import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -140,7 +141,7 @@ fun LightDetailsScreen(
                 }
                 LaunchedEffect(localBrightness) {
                     localBrightness?.let { value ->
-                        delay(50)
+                        delay(50.milliseconds)
                         viewModel.updateBrightness(value)
                     }
                 }

@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.seconds
 
 class DemoHouseService : HouseService {
     private val scope = CoroutineScope(Dispatchers.Default)
@@ -36,7 +37,7 @@ class DemoHouseService : HouseService {
     private fun startPeriodicSensorUpdates() {
         scope.launch {
             while (true) {
-                delay(5000) // 15 seconds
+                delay(15.seconds)
                 devices.update { deviceList ->
                     deviceList.map { device ->
                         when (device) {
@@ -91,7 +92,7 @@ class DemoHouseService : HouseService {
                 val images = imageUrls.shuffled()
                 for (image in images) {
                     emit(image)
-                    delay(5000)
+                    delay(5.seconds)
                 }
             }
         }

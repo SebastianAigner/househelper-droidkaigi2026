@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val DEVICES_POLL_INTERVAL_MS = 1000L
 
@@ -70,7 +71,7 @@ fun ChatScreen(
     LaunchedEffect(Unit) {
         while (true) {
             viewModel.refreshDevices()
-            delay(DEVICES_POLL_INTERVAL_MS)
+            delay(DEVICES_POLL_INTERVAL_MS.milliseconds)
         }
     }
 

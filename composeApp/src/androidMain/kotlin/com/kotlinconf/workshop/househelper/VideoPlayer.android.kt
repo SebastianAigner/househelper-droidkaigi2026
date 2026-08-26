@@ -5,6 +5,7 @@ import android.widget.VideoView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 
 @Composable
 actual fun VideoPlayer(
@@ -17,7 +18,7 @@ actual fun VideoPlayer(
         factory = { context ->
             VideoView(context).apply {
                 val videoView = this
-                videoView.setVideoURI(Uri.parse(url))
+                videoView.setVideoURI(url.toUri())
                 videoPlayerState.controlledPlayer = object : ControllableVideoPlayer {
                     override fun play() {
                         videoView.start()

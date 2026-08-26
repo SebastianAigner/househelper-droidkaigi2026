@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlin.time.Duration.Companion.seconds
 
 class DatabaseHouseService(private val database: AppDatabase) : HouseService {
 
@@ -47,7 +48,7 @@ class DatabaseHouseService(private val database: AppDatabase) : HouseService {
                 val images = imageUrls.shuffled()
                 for (image in images) {
                     emit(image)
-                    delay(5000)
+                    delay(5.seconds)
                 }
             }
         }

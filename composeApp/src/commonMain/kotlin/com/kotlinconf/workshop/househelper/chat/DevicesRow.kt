@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 private val OnFlashColor = Color(0xFF43A047)
 private val OffFlashColor = Color(0xFFE53935)
@@ -68,7 +69,7 @@ private fun DeviceChip(device: AssistantDevice) {
         rotation.animateTo(8f, tween(100))
         rotation.animateTo(-5f, tween(100))
         rotation.animateTo(0f, tween(80))
-        delay(500)
+        delay(500.milliseconds)
         flashOn = null
     }
 
