@@ -114,7 +114,7 @@ kotlin {
 
             // JavaFx for video player
             libs.bundles.javafx.get().forEach {
-                implementation(it) { artifact { classifier = javaFxClassifier } }
+                api(it) { artifact { classifier = javaFxClassifier } }
             }
         }
         iosMain.dependencies {
@@ -130,10 +130,4 @@ dependencies {
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
     add("kspIosArm64", libs.androidx.room.compiler)
     add("kspJvm", libs.androidx.room.compiler)
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.kotlinconf.workshop.househelper.MainKt"
-    }
 }
