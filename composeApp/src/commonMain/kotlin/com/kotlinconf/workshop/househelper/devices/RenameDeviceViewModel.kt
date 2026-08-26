@@ -3,6 +3,7 @@ package com.kotlinconf.workshop.househelper.devices
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
+import com.kotlinconf.workshop.househelper.DeviceId
 import com.kotlinconf.workshop.househelper.data.HouseService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class RenameDeviceViewModel(
-    private val deviceId: String,
+    private val deviceId: DeviceId,
     private val houseService: HouseService,
 ) : ViewModel() {
 

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
+import com.kotlinconf.workshop.househelper.DeviceId
 import com.kotlinconf.workshop.househelper.LightDevice
 import com.kotlinconf.workshop.househelper.data.HouseService
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class LightDetailsViewModel(
     private val houseService: HouseService,
-    private val deviceId: String,
+    private val deviceId: DeviceId,
 ) : ViewModel() {
     val light: StateFlow<LightDevice?> = houseService.getDevice(deviceId)
         .map { device -> device as? LightDevice }

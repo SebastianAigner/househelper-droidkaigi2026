@@ -24,13 +24,14 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kotlinconf.workshop.househelper.DeviceId
 
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun RenameDeviceScreen(
-    deviceId: String,
+    deviceId: DeviceId,
     onDismiss: () -> Unit,
     viewModel: RenameDeviceViewModel = koinViewModel { parametersOf(deviceId) },
 ) {

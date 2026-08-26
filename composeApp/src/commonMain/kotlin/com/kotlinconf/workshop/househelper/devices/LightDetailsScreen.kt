@@ -52,6 +52,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kotlinconf.workshop.househelper.DeviceConstants
+import com.kotlinconf.workshop.househelper.DeviceId
 
 import com.kotlinconf.workshop.househelper.LightDevice
 import househelper.composeapp.generated.resources.Res
@@ -64,7 +65,7 @@ import org.koin.core.parameter.parametersOf
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun LightDetailsScreen(
-    deviceId: String,
+    deviceId: DeviceId,
     onNavigateUp: () -> Unit,
     viewModel: LightDetailsViewModel = koinViewModel { parametersOf(deviceId) }
 ) {
@@ -105,10 +106,8 @@ fun LightDetailsScreen(
                     val clipboardManager = LocalClipboardManager.current
                     IconButton(
                         onClick = {
-                            device?.deviceId?.let { deviceId ->
-                                val deeplinkUri = "househelper://light/$deviceId"
-                                clipboardManager.setText(AnnotatedString(deeplinkUri))
-                            }
+                            val deeplinkUri = "househelper://light/${deviceId.value}"
+                            clipboardManager.setText(AnnotatedString(deeplinkUri))
                         }
                     ) {
                         Icon(Icons.Default.Share, contentDescription = stringResource(Res.string.device_action_share))

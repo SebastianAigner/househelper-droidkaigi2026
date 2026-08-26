@@ -1,6 +1,7 @@
 package com.kotlinconf.workshop.househelper.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.kotlinconf.workshop.househelper.DeviceId
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,10 +22,12 @@ data object OnboardingDone : Screen
 data object Dashboard : Screen
 
 @Serializable
-data class LightDetails(val deviceId: String) : Screen
+data class LightDetails(val deviceId: DeviceId) : Screen
 
 @Serializable
-data class CameraDetails(val deviceId: String) : Screen
+data class CameraDetails(val deviceId: DeviceId) : Screen
 
+// ⌄⌄⌄⌄⌄⌄⌄ only: // TODO add rename screen
 @Serializable
-data class RenameDevice(val deviceId: String) : Screen
+data class RenameDevice(val deviceId: DeviceId) : Screen
+// ⌃⌃⌃⌃⌃⌃⌃

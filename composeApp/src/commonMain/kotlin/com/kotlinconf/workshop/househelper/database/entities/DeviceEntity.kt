@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kotlinconf.workshop.househelper.CameraDevice
 import com.kotlinconf.workshop.househelper.Device
+import com.kotlinconf.workshop.househelper.DeviceId
 import com.kotlinconf.workshop.househelper.HumidityDevice
 import com.kotlinconf.workshop.househelper.LightDevice
 import com.kotlinconf.workshop.househelper.SwitchDevice
@@ -27,7 +28,7 @@ data class DeviceEntity(
     val isFavorite: Boolean = false
 ) {
     fun toDevice(): Device {
-        val deviceId = id
+        val deviceId = DeviceId(id)
         val areaIdObj = areaId
 
         return when (type) {
@@ -79,7 +80,7 @@ data class DeviceEntity(
         fun fromDevice(device: Device): DeviceEntity {
             return when (device) {
                 is LightDevice -> DeviceEntity(
-                    id = device.deviceId,
+                    id = device.deviceId.value,
                     name = device.name,
                     areaId = device.areaId,
                     type = DeviceType.LIGHT,
@@ -92,7 +93,7 @@ data class DeviceEntity(
                     isFavorite = device.isFavorite
                 )
                 is SwitchDevice -> DeviceEntity(
-                    id = device.deviceId,
+                    id = device.deviceId.value,
                     name = device.name,
                     areaId = device.areaId,
                     type = DeviceType.SWITCH,
@@ -100,7 +101,7 @@ data class DeviceEntity(
                     isFavorite = device.isFavorite
                 )
                 is HumidityDevice -> DeviceEntity(
-                    id = device.deviceId,
+                    id = device.deviceId.value,
                     name = device.name,
                     areaId = device.areaId,
                     type = DeviceType.HUMIDITY,
@@ -108,7 +109,7 @@ data class DeviceEntity(
                     isFavorite = device.isFavorite
                 )
                 is ThermostatDevice -> DeviceEntity(
-                    id = device.deviceId,
+                    id = device.deviceId.value,
                     name = device.name,
                     areaId = device.areaId,
                     type = DeviceType.THERMOSTAT,
@@ -116,7 +117,7 @@ data class DeviceEntity(
                     isFavorite = device.isFavorite
                 )
                 is CameraDevice -> DeviceEntity(
-                    id = device.deviceId,
+                    id = device.deviceId.value,
                     name = device.name,
                     areaId = device.areaId,
                     type = DeviceType.CAMERA,

@@ -6,6 +6,7 @@ import com.kotlinconf.workshop.househelper.Area
 import com.kotlinconf.workshop.househelper.CameraDevice
 import com.kotlinconf.workshop.househelper.Device
 import com.kotlinconf.workshop.househelper.DeviceConstants
+import com.kotlinconf.workshop.househelper.DeviceId
 
 import com.kotlinconf.workshop.househelper.HumidityDevice
 import com.kotlinconf.workshop.househelper.LightDevice
@@ -77,14 +78,14 @@ class DemoHouseService : HouseService {
         deviceList.filter { device -> device.areaId == areaId }
     }
 
-    override fun getDevice(deviceId: String): Flow<Device?> = devices.map { deviceList ->
+    override fun getDevice(deviceId: DeviceId): Flow<Device?> = devices.map { deviceList ->
         deviceList.find { device -> device.deviceId == deviceId }
     }
 
-    override fun getCamera(deviceId: String): Flow<CameraDevice?> =
+    override fun getCamera(deviceId: DeviceId): Flow<CameraDevice?> =
         getDevice(deviceId).map { it as? CameraDevice }
 
-    override fun getCameraFootage(deviceId: String): Flow<String> {
+    override fun getCameraFootage(deviceId: DeviceId): Flow<String> {
         return flow {
             while (true) {
                 val images = imageUrls.shuffled()
@@ -108,7 +109,7 @@ class DemoHouseService : HouseService {
         }
     }
 
-    override suspend fun toggle(deviceId: String): Boolean {
+    override suspend fun toggle(deviceId: DeviceId): Boolean {
         val device: Device? = getDevice(deviceId).first()
 
         if (device !is Toggleable) {
@@ -129,7 +130,7 @@ class DemoHouseService : HouseService {
         return true
     }
 
-    override suspend fun setBrightness(deviceId: String, brightness: Int) {
+    override suspend fun setBrightness(deviceId: DeviceId, brightness: Int) {
         val light = getDevice(deviceId).first() as? LightDevice
             ?: throw IllegalArgumentException("Light not found for $deviceId")
         updateDevice(
@@ -140,13 +141,13 @@ class DemoHouseService : HouseService {
         )
     }
 
-    override suspend fun setColor(deviceId: String, color: Color) {
+    override suspend fun setColor(deviceId: DeviceId, color: Color) {
         val light = getDevice(deviceId).first() as? LightDevice
             ?: throw IllegalArgumentException("Light not found for $deviceId")
         updateDevice(light.copy(color = color))
     }
 
-    override suspend fun rename(deviceId: String, name: String) {
+    override suspend fun rename(deviceId: DeviceId, name: String) {
         val device: Device = getDevice(deviceId).first()
             ?: throw IllegalArgumentException("Device not found for $deviceId")
 
@@ -159,7 +160,7 @@ class DemoHouseService : HouseService {
         }
     }
 
-    override suspend fun toggleFavorite(deviceId: String): Boolean {
+    override suspend fun toggleFavorite(deviceId: DeviceId): Boolean {
         val device: Device = getDevice(deviceId).first()
             ?: return false
 

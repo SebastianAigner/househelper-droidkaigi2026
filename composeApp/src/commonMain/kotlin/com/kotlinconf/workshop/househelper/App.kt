@@ -11,13 +11,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSerializable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
-import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.compose.serialization.serializers.SnapshotStateListSerializer
 import com.kotlinconf.workshop.househelper.dashboard.DashboardScreen
@@ -47,19 +45,16 @@ import kotlinx.coroutines.channels.Channel
 import org.jetbrains.compose.resources.stringResource
 
 fun navigateToDeepLink(uri: String) {
-    deepLinkUris.trySend(uri)
-}
+    if (!uri.startsWith("househelper://")) return
 
-private val deepLinkUris = Channel<String>(capacity = 1)
-
-// Navigation 3 has no built-in URI deep link resolution, so "househelper://light/{deviceId}" is parsed by hand.
-private fun parseDeepLink(uri: String): Screen? {
-    val segments = uri.substringAfter("://").split("/")
-    return when (segments.getOrNull(0)) {
-        "light" -> segments.getOrNull(1)?.let { LightDetails(it) }
-        else -> null
+    val path = uri.substringAfter("househelper://")
+    val (type, id) = path.split("/")
+    when (type) {
+        "light" -> deepLinkRequests.trySend(LightDetails(DeviceId(id)))
     }
 }
+
+private val deepLinkRequests = Channel<Screen>(capacity = 1)
 
 @Composable
 fun App() {
@@ -78,24 +73,22 @@ fun App() {
             val backStack = rememberSerializable(serializer = SnapshotStateListSerializer()) {
                 mutableStateListOf<Screen>(OnboardingWelcome)
             }
-            val dialogSceneStrategy = remember { DialogSceneStrategy<Screen>() }
 
             LaunchedEffect(Unit) {
                 while (true) {
-                    val uri = deepLinkUris.receive()
-                    val target = parseDeepLink(uri) ?: continue
+                    val screen = deepLinkRequests.receive()
 
-                    // Make sure we have a Dashboard, then go to the deeplinked screen on top of it
-                    backStack.clear()
-                    backStack.add(Dashboard)
-                    backStack.add(target)
+                    if (!backStack.contains(Dashboard)) {
+                        backStack.clear()
+                        backStack.add(Dashboard)
+                    }
+                    backStack.add(screen)
                 }
             }
 
             NavDisplay(
                 backStack = backStack,
                 onBack = { backStack.removeLastOrNull() },
-                sceneStrategies = listOf(dialogSceneStrategy),
                 entryDecorators = listOf(
                     rememberSaveableStateHolderNavEntryDecorator(),
                     rememberViewModelStoreNavEntryDecorator(),
@@ -152,18 +145,20 @@ fun App() {
                             deviceId = it.deviceId,
                             onNavigateUp = { backStack.removeLastOrNull() },
                             onNavigateToRename = { deviceId ->
+                                // ⌄⌄⌄⌄⌄⌄⌄ only: // TODO navigate to rename screen
                                 backStack.add(RenameDevice(deviceId))
+                                // ⌃⌃⌃⌃⌃⌃⌃
                             },
                         )
                     }
-                    entry<RenameDevice>(
-                        metadata = DialogSceneStrategy.dialog()
-                    ) {
+                    // ⌄⌄⌄⌄⌄⌄⌄
+                    entry<RenameDevice> {
                         RenameDeviceScreen(
                             deviceId = it.deviceId,
                             onDismiss = { backStack.removeLastOrNull() },
                         )
                     }
+                    // ⌃⌃⌃⌃⌃⌃⌃
                 },
             )
         }

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.kotlinconf.workshop.househelper.Area
 import com.kotlinconf.workshop.househelper.CameraDevice
 import com.kotlinconf.workshop.househelper.Device
+import com.kotlinconf.workshop.househelper.DeviceId
 import com.kotlinconf.workshop.househelper.LightDevice
 import com.kotlinconf.workshop.househelper.SwitchDevice
 import com.kotlinconf.workshop.househelper.Toggleable
@@ -30,17 +31,17 @@ class DatabaseHouseService(private val database: AppDatabase) : HouseService {
         }
     }
 
-    override fun getDevice(deviceId: String): Flow<Device?> {
-        return database.deviceDao().getDeviceById(deviceId).map { deviceEntity ->
+    override fun getDevice(deviceId: DeviceId): Flow<Device?> {
+        return database.deviceDao().getDeviceById(deviceId.value).map { deviceEntity ->
             deviceEntity?.toDevice()
         }
     }
 
-    override fun getCamera(deviceId: String): Flow<CameraDevice?> {
+    override fun getCamera(deviceId: DeviceId): Flow<CameraDevice?> {
         return getDevice(deviceId).map { it as? CameraDevice }
     }
 
-    override fun getCameraFootage(deviceId: String): Flow<String> {
+    override fun getCameraFootage(deviceId: DeviceId): Flow<String> {
         return flow {
             while (true) {
                 val images = imageUrls.shuffled()
@@ -52,7 +53,7 @@ class DatabaseHouseService(private val database: AppDatabase) : HouseService {
         }
     }
 
-    override suspend fun toggle(deviceId: String): Boolean {
+    override suspend fun toggle(deviceId: DeviceId): Boolean {
         val device: Device? = getDevice(deviceId).first()
 
         if (device !is Toggleable) {
@@ -61,28 +62,28 @@ class DatabaseHouseService(private val database: AppDatabase) : HouseService {
 
         val deviceDao = database.deviceDao()
         when (device) {
-            is SwitchDevice -> deviceDao.updateDeviceToggleState(deviceId, !device.isOn)
-            is CameraDevice -> deviceDao.updateDeviceToggleState(deviceId, !device.isOn)
+            is SwitchDevice -> deviceDao.updateDeviceToggleState(deviceId.value, !device.isOn)
+            is CameraDevice -> deviceDao.updateDeviceToggleState(deviceId.value, !device.isOn)
             is LightDevice -> {
                 val newIsOn = !device.isOn
                 if (newIsOn && device.brightness == 0) {
-                    deviceDao.updateDeviceToggleState(deviceId, true)
-                    deviceDao.updateDeviceBrightness(deviceId, 100)
+                    deviceDao.updateDeviceToggleState(deviceId.value, true)
+                    deviceDao.updateDeviceBrightness(deviceId.value, 100)
                 } else {
-                    deviceDao.updateDeviceToggleState(deviceId, newIsOn)
+                    deviceDao.updateDeviceToggleState(deviceId.value, newIsOn)
                 }
             }
         }
         return true
     }
 
-    override suspend fun setBrightness(deviceId: String, brightness: Int) {
-        database.deviceDao().updateDeviceBrightness(deviceId, brightness)
+    override suspend fun setBrightness(deviceId: DeviceId, brightness: Int) {
+        database.deviceDao().updateDeviceBrightness(deviceId.value, brightness)
     }
 
-    override suspend fun setColor(deviceId: String, color: Color) {
+    override suspend fun setColor(deviceId: DeviceId, color: Color) {
         database.deviceDao().updateDeviceColor(
-            deviceId,
+            deviceId.value,
             color.red,
             color.green,
             color.blue,
@@ -90,17 +91,17 @@ class DatabaseHouseService(private val database: AppDatabase) : HouseService {
         )
     }
 
-    override suspend fun rename(deviceId: String, name: String) {
-        database.deviceDao().updateDeviceName(deviceId, name)
+    override suspend fun rename(deviceId: DeviceId, name: String) {
+        database.deviceDao().updateDeviceName(deviceId.value, name)
     }
 
-    override suspend fun toggleFavorite(deviceId: String): Boolean {
+    override suspend fun toggleFavorite(deviceId: DeviceId): Boolean {
         // ⌄⌄⌄⌄⌄⌄⌄ only the following:
         // // TODO implement toggling the state in the database
         // return false
         val device = getDevice(deviceId).first() ?: return false
         val newFavoriteStatus = !device.isFavorite
-        database.deviceDao().updateDeviceFavoriteStatus(deviceId, newFavoriteStatus)
+        database.deviceDao().updateDeviceFavoriteStatus(deviceId.value, newFavoriteStatus)
         return newFavoriteStatus
         // ⌃⌃⌃⌃⌃⌃⌃
     }

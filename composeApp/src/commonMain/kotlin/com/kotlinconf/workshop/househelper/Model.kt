@@ -7,7 +7,13 @@ import househelper.composeapp.generated.resources.humidity
 import househelper.composeapp.generated.resources.lightbulb
 import househelper.composeapp.generated.resources.switch
 import househelper.composeapp.generated.resources.thermostat
+import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.DrawableResource
+import kotlin.jvm.JvmInline
+
+@JvmInline
+@Serializable
+value class DeviceId(val value: String)
 
 data class Area(
     val id: String,
@@ -19,7 +25,7 @@ sealed interface Toggleable {
 }
 
 sealed interface Device {
-    val deviceId: String
+    val deviceId: DeviceId
     val name: String
     val iconResource: DrawableResource
     val areaId: String
@@ -31,7 +37,7 @@ interface Sensor {
 }
 
 data class LightDevice(
-    override val deviceId: String,
+    override val deviceId: DeviceId,
     override val name: String,
     override val iconResource: DrawableResource = Res.drawable.lightbulb,
     override val isOn: Boolean = false,
@@ -48,7 +54,7 @@ data class LightDevice(
 }
 
 data class SwitchDevice(
-    override val deviceId: String,
+    override val deviceId: DeviceId,
     override val name: String,
     override val iconResource: DrawableResource = Res.drawable.switch,
     override val isOn: Boolean = false,
@@ -57,7 +63,7 @@ data class SwitchDevice(
 ) : Device, Toggleable
 
 data class HumidityDevice(
-    override val deviceId: String,
+    override val deviceId: DeviceId,
     override val name: String,
     override val iconResource: DrawableResource = Res.drawable.humidity,
     override val areaId: String,
@@ -72,7 +78,7 @@ data class HumidityDevice(
 }
 
 data class ThermostatDevice(
-    override val deviceId: String,
+    override val deviceId: DeviceId,
     override val name: String,
     override val iconResource: DrawableResource = Res.drawable.thermostat,
     override val areaId: String,
@@ -87,7 +93,7 @@ data class ThermostatDevice(
 }
 
 data class CameraDevice(
-    override val deviceId: String,
+    override val deviceId: DeviceId,
     override val name: String,
     override val iconResource: DrawableResource = Res.drawable.camera,
     override val isOn: Boolean = false,

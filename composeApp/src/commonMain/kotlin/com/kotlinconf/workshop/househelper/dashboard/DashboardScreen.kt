@@ -22,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kotlinconf.workshop.househelper.DeviceId
 import com.kotlinconf.workshop.househelper.chat.ChatScreen
 
 import househelper.composeapp.generated.resources.Res
@@ -33,8 +34,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DashboardScreen(
-    onNavigateToLightDetails: (String) -> Unit,
-    onNavigateToCameraDetails: (String) -> Unit,
+    onNavigateToLightDetails: (DeviceId) -> Unit,
+    onNavigateToCameraDetails: (DeviceId) -> Unit,
     viewModel: DashboardViewModel = koinViewModel(),
 ) {
     var selectedTabIndex by rememberSaveable { mutableStateOf(0) }

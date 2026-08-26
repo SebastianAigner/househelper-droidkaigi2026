@@ -63,6 +63,7 @@ import com.kotlinconf.workshop.househelper.Area
 import com.kotlinconf.workshop.househelper.CameraDevice
 import com.kotlinconf.workshop.househelper.Device
 import com.kotlinconf.workshop.househelper.DeviceConstants
+import com.kotlinconf.workshop.househelper.DeviceId
 
 import com.kotlinconf.workshop.househelper.HumidityDevice
 import com.kotlinconf.workshop.househelper.LightDevice
@@ -83,8 +84,8 @@ import kotlin.math.roundToInt
 @Composable
 fun AreasContent(
     areas: List<Area>,
-    onNavigateToLightDetails: (String) -> Unit,
-    onNavigateToCameraDetails: (String) -> Unit,
+    onNavigateToLightDetails: (DeviceId) -> Unit,
+    onNavigateToCameraDetails: (DeviceId) -> Unit,
 ) {
     val favoritesViewModel: FavoritesViewModel = koinViewModel()
     val favoriteDevices by favoritesViewModel.devices.collectAsStateWithLifecycle()
@@ -268,7 +269,7 @@ private fun LightCardPreview() {
     var isOn by remember { mutableStateOf(true) }
     DeviceCard(
         device = LightDevice(
-            deviceId = "",
+            deviceId = DeviceId(""),
             name = "Ceiling light",
             areaId = "",
             isOn = isOn,
@@ -286,7 +287,7 @@ private fun SwitchCardPreview() {
     var isOn by remember { mutableStateOf(true) }
     DeviceCard(
         device = SwitchDevice(
-            deviceId = "",
+            deviceId = DeviceId(""),
             name = "TV",
             areaId = "",
             isOn = isOn,
@@ -302,7 +303,7 @@ private fun CameraCardPreview() {
     var isOn by remember { mutableStateOf(false) }
     DeviceCard(
         device = CameraDevice(
-            deviceId = "",
+            deviceId = DeviceId(""),
             name = "Garage interior",
             areaId = "",
             isOn = isOn,
@@ -317,7 +318,7 @@ private fun CameraCardPreview() {
 private fun TempCardPreview() {
     DeviceCard(
         device = ThermostatDevice(
-            deviceId = "",
+            deviceId = DeviceId(""),
             name = "Weather station",
             areaId = "",
             currentValue = 25f
@@ -331,7 +332,7 @@ private fun TempCardPreview() {
 private fun HumidityCardPreview() {
     DeviceCard(
         device = HumidityDevice(
-            deviceId = "",
+            deviceId = DeviceId(""),
             name = "Weather station",
             areaId = "",
             currentValue = 42.42f
