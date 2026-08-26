@@ -21,26 +21,21 @@ import androidx.savedstate.compose.serialization.serializers.SnapshotStateListSe
 import com.kotlinconf.workshop.househelper.dashboard.DashboardScreen
 import com.kotlinconf.workshop.househelper.devices.CameraDetailsScreen
 import com.kotlinconf.workshop.househelper.devices.LightDetailsScreen
-import com.kotlinconf.workshop.househelper.devices.RenameDeviceScreen
 import com.kotlinconf.workshop.househelper.navigation.CameraDetails
 import com.kotlinconf.workshop.househelper.navigation.Dashboard
 import com.kotlinconf.workshop.househelper.navigation.LightDetails
 import com.kotlinconf.workshop.househelper.navigation.OnboardingAbout
 import com.kotlinconf.workshop.househelper.navigation.OnboardingDone
 import com.kotlinconf.workshop.househelper.navigation.OnboardingWelcome
-import com.kotlinconf.workshop.househelper.navigation.RenameDevice
 import com.kotlinconf.workshop.househelper.navigation.Screen
 import com.kotlinconf.workshop.househelper.theme.AppDarkColorScheme
 import com.kotlinconf.workshop.househelper.theme.AppLightColorScheme
 import com.kotlinconf.workshop.househelper.theme.AppShapes
 import househelper.composeapp.generated.resources.Res
 import househelper.composeapp.generated.resources.onboarding_about
-import househelper.composeapp.generated.resources.onboarding_about_subtitle
 import househelper.composeapp.generated.resources.onboarding_done
-import househelper.composeapp.generated.resources.onboarding_done_subtitle
 import househelper.composeapp.generated.resources.onboarding_next_button
 import househelper.composeapp.generated.resources.onboarding_welcome
-import househelper.composeapp.generated.resources.onboarding_welcome_subtitle
 import kotlinx.coroutines.channels.Channel
 import org.jetbrains.compose.resources.stringResource
 
@@ -97,7 +92,6 @@ fun App() {
                     entry<OnboardingWelcome> {
                         OnboardingScreen(
                             text = stringResource(Res.string.onboarding_welcome),
-                            subtitle = stringResource(Res.string.onboarding_welcome_subtitle),
                             buttonText = stringResource(Res.string.onboarding_next_button),
                             icon = Icons.Default.Favorite,
                             onNext = { backStack.add(OnboardingAbout) }
@@ -106,7 +100,6 @@ fun App() {
                     entry<OnboardingAbout> {
                         OnboardingScreen(
                             text = stringResource(Res.string.onboarding_about),
-                            subtitle = stringResource(Res.string.onboarding_about_subtitle),
                             buttonText = stringResource(Res.string.onboarding_next_button),
                             icon = Icons.Default.Info,
                             onNext = { backStack.add(OnboardingDone) }
@@ -115,7 +108,6 @@ fun App() {
                     entry<OnboardingDone> {
                         OnboardingScreen(
                             text = stringResource(Res.string.onboarding_done),
-                            subtitle = stringResource(Res.string.onboarding_done_subtitle),
                             buttonText = stringResource(Res.string.onboarding_next_button),
                             icon = Icons.Default.Home,
                             onNext = {
@@ -145,20 +137,10 @@ fun App() {
                             deviceId = it.deviceId,
                             onNavigateUp = { backStack.removeLastOrNull() },
                             onNavigateToRename = { deviceId ->
-                                // ⌄⌄⌄⌄⌄⌄⌄ only: // TODO navigate to rename screen
-                                backStack.add(RenameDevice(deviceId))
-                                // ⌃⌃⌃⌃⌃⌃⌃
+                                // TODO navigate to rename screen
                             },
                         )
                     }
-                    // ⌄⌄⌄⌄⌄⌄⌄
-                    entry<RenameDevice> {
-                        RenameDeviceScreen(
-                            deviceId = it.deviceId,
-                            onDismiss = { backStack.removeLastOrNull() },
-                        )
-                    }
-                    // ⌃⌃⌃⌃⌃⌃⌃
                 },
             )
         }

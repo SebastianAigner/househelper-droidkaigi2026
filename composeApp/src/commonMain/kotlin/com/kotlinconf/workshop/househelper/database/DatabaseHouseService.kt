@@ -9,12 +9,12 @@ import com.kotlinconf.workshop.househelper.LightDevice
 import com.kotlinconf.workshop.househelper.SwitchDevice
 import com.kotlinconf.workshop.househelper.Toggleable
 import com.kotlinconf.workshop.househelper.data.HouseService
-import com.kotlinconf.workshop.househelper.database.entities.DeviceEntity
 import com.kotlinconf.workshop.househelper.utils.imageUrls
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlin.time.Duration.Companion.seconds
 
@@ -97,22 +97,11 @@ class DatabaseHouseService(private val database: AppDatabase) : HouseService {
     }
 
     override suspend fun toggleFavorite(deviceId: DeviceId): Boolean {
-        // ⌄⌄⌄⌄⌄⌄⌄ only the following:
-        // // TODO implement toggling the state in the database
-        // return false
-        val device = getDevice(deviceId).first() ?: return false
-        val newFavoriteStatus = !device.isFavorite
-        database.deviceDao().updateDeviceFavoriteStatus(deviceId.value, newFavoriteStatus)
-        return newFavoriteStatus
-        // ⌃⌃⌃⌃⌃⌃⌃
+        // TODO implement toggling the state in the database
+        return false
     }
 
     override fun getFavoriteDevices(): Flow<List<Device>> {
-        // ⌄⌄⌄⌄⌄⌄⌄ only: return flowOf(emptyList())
-        val favoriteDevices: Flow<List<DeviceEntity>> = database.deviceDao().getFavoriteDevices()
-        return favoriteDevices.map { deviceEntities ->
-            deviceEntities.map { it.toDevice() }
-        }
-        // ⌃⌃⌃⌃⌃⌃⌃
+        return flowOf(emptyList())
     }
 }
