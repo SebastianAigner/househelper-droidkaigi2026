@@ -133,6 +133,7 @@ fun CameraDetailsScreen(
                     }
                 }
 
+                // ⌄⌄⌄⌄⌄⌄⌄
                 val footageUrl by viewModel.cameraFootage.collectAsStateWithLifecycle()
                 AsyncImage(
                     model = ImageRequest.Builder(LocalPlatformContext.current)
@@ -147,6 +148,7 @@ fun CameraDetailsScreen(
                     contentScale = ContentScale.Crop,
                     colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) }),
                 )
+                // ⌃⌃⌃⌃⌃⌃⌃
 
 //                VideoPlayer(
 //                    url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",

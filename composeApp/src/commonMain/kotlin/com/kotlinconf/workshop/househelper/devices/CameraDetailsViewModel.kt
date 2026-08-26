@@ -20,12 +20,14 @@ class CameraDetailsViewModel(
             initialValue = null
         )
 
+    // ⌄⌄⌄⌄⌄⌄⌄
     val cameraFootage: StateFlow<String?> = houseService.getCameraFootage(deviceId)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = null
         )
+    // ⌃⌃⌃⌃⌃⌃⌃
 
     fun toggleCamera() {
         viewModelScope.launch {
