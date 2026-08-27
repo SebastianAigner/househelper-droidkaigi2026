@@ -112,8 +112,16 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
 
             // JavaFx for video player
-            libs.bundles.javafx.get().forEach {
-                api(it) { artifact { classifier = javaFxClassifier } }
+            val javaFxVersion = libs.versions.javafx.get()
+            listOf(
+                "base",
+                "graphics",
+                "swing",
+                "media",
+            ).forEach { module ->
+                api("org.openjfx:javafx-$module:$javaFxVersion:$javaFxClassifier") {
+                    isTransitive = false
+                }
             }
         }
         iosMain.dependencies {
